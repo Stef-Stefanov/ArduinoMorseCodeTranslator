@@ -1,4 +1,4 @@
-
+bool showSigns = false;
 char myString[255];
 
 // the setup routine runs once when you press reset:
@@ -6,6 +6,15 @@ void setup() {
   Serial.begin(9600); // Initialize serial communication
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.println();
+  Serial.println("Show dots and dashes? Answer 1 for yes:");
+  while(Serial.available() == 0){
+  }
+  int decision = Serial.parseInt();
+  if (decision == 1){
+    showSigns = true;
+  }
+  Serial.println();
+  Serial.println("Please input up to 255 chars to be translated into morese code:");
   while(Serial.available() == 0){
   }
   String input = Serial.readString();
@@ -26,6 +35,9 @@ void loop() {
 }
 
 void shortBlink(){
+  if (showSigns){
+    Serial.print(" . ");
+  }
   digitalWrite(LED_BUILTIN, HIGH);
   delay(420);
   digitalWrite(LED_BUILTIN, LOW);
@@ -33,6 +45,9 @@ void shortBlink(){
 }
 
 void longBlink(){
+    if (showSigns){
+    Serial.print(" _ ");
+  }
   digitalWrite(LED_BUILTIN, HIGH);
   delay(1260);
   digitalWrite(LED_BUILTIN, LOW);
