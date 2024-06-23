@@ -3,23 +3,10 @@ char myString[255];
 
 // the setup routine runs once when you press reset:
 void setup() {
-  Serial.begin(9600); // Initialize serial communication
+  Serial.begin(9600);             // Initialize serial communication
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.println();
-  Serial.println("Show dots and dashes? Answer 1 for yes:");
-  while(Serial.available() == 0){
-  }
-  int decision = Serial.parseInt();
-  if (decision == 1){
-    showSigns = true;
-  }
-  Serial.println();
-  Serial.println("Please input up to 255 chars to be translated into morese code:");
-  while(Serial.available() == 0){
-  }
-  String input = Serial.readString();
-  input.toLowerCase();
-  input.toCharArray(myString, 255);
+  showSignsHandler();             // Handles whether morse signs are displeyed on Serial Monitor
+  inputString();                  // Handles String input from user
 }
 
 // the loop routine runs over and over again forever:
@@ -70,14 +57,42 @@ void endSequence(){
   delay(2000);
 }
 
+void showSignsHandler(){
+  Serial.println();
+  Serial.println("Show dots and dashes? Answer 1 for yes, otherwise input anything else:");
+    while(Serial.available() == 0){
+  }
+  int decision = Serial.parseInt();
+  if (decision == 1){
+    showSigns = true;
+    Serial.print("You have chosen to display dashes and dots.");
+    return;
+  }
+  Serial.print("You have chosen NOT to display dashes and dots.");
+}
+
+void inputString(){
+  Serial.println();
+  Serial.println("Please input up to 255 chars to be translated into morese code:");
+  while(Serial.available() == 0){
+  }
+  String input = Serial.readString();
+  input.toLowerCase();              // Shifts String to lowercase, so we only handle lowercase chars.
+  input.toCharArray(myString, 255); // Parse input String into myString global variable
+}
+
 void afterCharDelay(){
   delay(1000);
 }
 
 void displayChar(char c){
-
   Serial.print(' ');
   Serial.print(c);
+  displayBlink(c);
+  afterCharDelay();
+}
+
+void displayBlink(char c){
   switch (c) {
     case 'a':
       aBlink();
@@ -160,7 +175,6 @@ void displayChar(char c){
     default:
       break;
   }
-  afterCharDelay();
 }
 
 void aBlink(){
